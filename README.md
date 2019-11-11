@@ -28,7 +28,8 @@ To get the help dialogue, run `python sd9tool.py --help`. See below for argument
 * `--export <FILE>` - Export audio file in SD9
 
 **SD9 Parameters**
-* `--loop` - Enable portion of the track to loop
+If none of the options below are specified, whatever is in the file will be used.
+* `--loop <True|False>` - Enable portion of the track to loop
 * `--loop-start` - Sample number indicating the start of the loop
 * `--loop-end` - Sample number indicating the end of the loop. *Note: this may be needed if your audio file is not looping smoothly*
 * `--volume` - Set the volume of the audio track, range is 0 - 125 (loudest)

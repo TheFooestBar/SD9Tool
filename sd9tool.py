@@ -72,7 +72,7 @@ class SD9File(object):
             return True
 
         except Exception as err:
-            print("ERROR: Could not load SD9")
+            print(f"ERROR: Could not load SD9: {err}")
             sd9.close()
             return False
 
@@ -81,13 +81,8 @@ class SD9File(object):
         Function : sd9_save
         Purpose  : Save SD9 contents to a file
         '''
-        if self.clobber:
-            save_name = self.filename
-        else:
-            save_name = self.filename + "_out"
-
         try:
-            outfile = open(save_name, 'wb')
+            outfile = open(self.filename, 'wb')
             outfile.write(self.header)
             outfile.write(self.headerSize)
             outfile.write(self.audioSize)
@@ -103,7 +98,7 @@ class SD9File(object):
             outfile.write(self.audio)
             return True
         except Exception as err:
-            print("ERROR: Could not save SD9 file")
+            print(f"ERROR: Could not save SD9 file: {err}")
             return False
 
     def sd9_set_param(self, volume=None, loop=None, loopStart=None, loopEnd=None):
@@ -137,7 +132,7 @@ class SD9File(object):
             self.audio = infile.read()
             self.audioSize = len(self.audio).to_bytes(4, byteorder="little", signed=False)
         except Exception as err:
-            print("ERROR: Could not import audio track")
+            print(f"ERROR: Could not import audio track: {err}")
             return False
 
         saved = self.sd9_save()
@@ -161,7 +156,7 @@ class SD9File(object):
             print(f"SUCCESS: Audio exported from SD9: {export_name}")
             return True
         except Exception as err:
-            print("ERROR: Could not export audio track")
+            print(f"ERROR: Could not export audio track {err}")
             return False
 
     def __str__(self):
@@ -237,7 +232,7 @@ def main(argv):
     )
     trackOptions.add_argument(
         '-l', '--loop',
-        action='store_true'
+        type=bool
     )
     trackOptions.add_argument(
         '-ls', '--loop-start',
