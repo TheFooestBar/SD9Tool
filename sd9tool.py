@@ -187,7 +187,7 @@ def main(argv):
         description="SD9 import, export, and modification tool"
     )
 
-    # 
+    # General arguments
     parser.add_argument(
         '-f', '--sd9',
         help='SD9 file to use as base',

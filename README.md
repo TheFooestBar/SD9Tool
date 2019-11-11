@@ -37,7 +37,7 @@ If none of the options below are specified, whatever is in the file will be used
 ## Examples
 Import audio into SD9, set the volume to 95, and set the start and end sample:
 ```bash
-python sd9tool.py --sd9 8thstyle.sd9 --import ddr4m.wav --volume 95 --loop --loop-start 0 --loop-end 1016063
+python sd9tool.py --sd9 8thstyle.sd9 --import ddr4m.wav --volume 95 --loop true --loop-start 0 --loop-end 1016063
 ```
 
 Export audio from SD9 to a file:
