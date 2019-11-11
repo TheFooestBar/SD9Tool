@@ -205,24 +205,25 @@ def main(argv):
     )
 
     # SD9 file operations
-    fileAction = parser.add_mutually_exclusive_group(title="File Operations", required=True)
-    fileAction.add_argument(
+    fileAction = parser.add_argument_group(title="File Operations")
+    fileActionExclusive = fileAction.add_mutually_exclusive_group(required=True)
+    fileActionExclusive.add_argument(
         "-p", "--print",
         help='Print SD9 header hex data',
         action='store_true'
     )
-    fileAction.add_argument(
+    fileActionExclusive.add_argument(
         "-m", "--modify",
         help='Only modify SD9 options',
         action='store_true',
         dest='sd9_modify'
     )
-    fileAction.add_argument(
+    fileActionExclusive.add_argument(
         '-i', '--import',
         help='Audio file to import into SD9 file',
         dest='audio_import'
     )
-    fileAction.add_argument(
+    fileActionExclusive.add_argument(
         '-e', '--export',
         help='Audio file to export from SD9 file',
         dest='audio_export'
