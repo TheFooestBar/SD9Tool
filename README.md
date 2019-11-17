@@ -73,9 +73,9 @@ Audio extracted is placed in a directory titled `export_<SSP filename>` with eac
 ## Usage Examples
 Export audio in WAV format:
 ```
-./ssp2sd9.py -f lincle.ssp
+python ssp2sd9.py -f lincle.ssp
 ```
 Export audio in SD9 format:
 ```
-./ssp2sd9.py -f seeweewus.ssp
+python ssp2sd9.py -f seeweewus.ssp
 ```
