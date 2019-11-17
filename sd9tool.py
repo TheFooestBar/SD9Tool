@@ -34,16 +34,18 @@ class SD9File(object):
 
         if filename:
             self.fileLoaded = self.sd9_load(filename)
-
+    
     def sd9_load(self, filename):
         '''
         Function : sd9_load
         Purpose  : Load SD9 header and audio data from a file
         '''
+
+        self.filename = filename
         if self.clobber:
-            self.filename = filename
+            self.exportname = filename
         else:
-            self.filename = filename + "_out"
+            self.exportname = filename + "_out"
 
         try:
             sd9 = open(filename, "rb")
@@ -79,7 +81,7 @@ class SD9File(object):
         Purpose  : Save SD9 contents to a file
         '''
         try:
-            outfile = open(self.filename, 'wb')
+            outfile = open(self.exportname, 'wb')
             outfile.write(self.header)
             outfile.write(self.headerSize)
             outfile.write(self.audioSize)
@@ -97,6 +99,23 @@ class SD9File(object):
         except Exception as err:
             print(f"ERROR: Could not save SD9 file: {err}")
             return False
+
+    def sd9_import(self, sd9):
+        '''
+        Function : sd9_import
+        Purpose  : Import audio data and SD9 params from supplied SD9 object
+        '''
+        self.audioSize  = sd9.audioSize
+        self.volume     = sd9.volume
+        self.loopStart  = sd9.loopStart
+        self.loopEnd    = sd9.loopEnd
+        self.loop       = sd9.loop
+        self.audio      = sd9.audio
+
+        saved = self.sd9_save()
+        if saved:
+            print(f"SUCCESS: SD9 data imported: {sd9.filename} => {self.exportname}")
+        return self.sd9_save()
 
     def sd9_set_param(self, volume=None, loop=None, loopStart=None, loopEnd=None):
         '''
@@ -134,7 +153,7 @@ class SD9File(object):
 
         saved = self.sd9_save()
         if saved:
-            print(f"SUCCESS: Audio imported into SD9: {self.filename}")
+            print(f"SUCCESS: Audio imported into SD9: {self.exportname}")
         return saved
 
     def audio_export(self, export_name):
@@ -195,6 +214,10 @@ def main(argv):
         help='Overwrite output files',
         action='store_true'
     )
+    parser.add_argument(
+        '-o', '--outfile',
+        help='Specify SD9 output filename',
+    )
 
     # SD9 file operations
     fileAction = parser.add_argument_group(title="File Operations")
@@ -211,6 +234,11 @@ def main(argv):
         dest='sd9_modify'
     )
     fileActionExclusive.add_argument(
+        '-t', '--transfer',
+        help='Transfer audio and SD9 parameters from provided SD9 file',
+        dest='sd9_transfer'
+    )
+    fileActionExclusive.add_argument(
         '-i', '--import',
         help='Audio file to import into SD9 file',
         dest='audio_import'
@@ -220,7 +248,7 @@ def main(argv):
         help='Audio file to export from SD9 file',
         dest='audio_export'
     )
-
+    
     # SD9 parameters, by default it will use whatever is in the file
     trackOptions = parser.add_argument_group(title="Audio Track Options")
     trackOptions.add_argument(
@@ -245,9 +273,13 @@ def main(argv):
     # Load SD9 file
     sd9 = SD9File(filename=args.sd9, clobber=args.clobber)
 
+    # Override export filename if specified
+    if args.outfile:
+        sd9.exportname = args.outfile
+
     # Do not proceed without SD9 file loaded
     if not sd9.fileLoaded:
-        return False
+        return 1
 
     # Set SD9 header parameters: volume and section loop settings
     sd9.sd9_set_param(args.volume, args.loop, args.loop_start, args.loop_end)
@@ -262,20 +294,29 @@ def main(argv):
 
     # Import audio, update size in header, and save SD9 file
     elif args.audio_import:
-        ret_import  = sd9.audio_import(args.audio_import)
-        if not ret_import:
+        if not sd9.audio_import(args.audio_import):
             return 1
 
     # Export audio to file
     elif args.audio_export:
-        ret_export  = sd9.audio_export(export_name=args.audio_export)
-        if not ret_export:
+        if not sd9.audio_export(export_name=args.audio_export):
             return 1
 
     # Save modified SD9 header 
     elif args.sd9_modify:
-        ret_save    = sd9.sd9_save()
-        if not ret_save:
+        if not sd9.sd9_save():
+            print(f"SUCCESS: SD9 modified: {sd9.exportname}")
+            return 1
+
+    elif args.sd9_transfer:
+        sd9Import = SD9File(filename=args.sd9_transfer)
+        if not sd9Import.fileLoaded:
+            return 1
+        
+        sd9.sd9_import(sd9Import)
+        sd9.sd9_set_param(args.volume, args.loop, args.loop_start, args.loop_end)
+
+        if not sd9.sd9_save():
             return 1
 
     return 0
