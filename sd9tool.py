@@ -59,15 +59,12 @@ class SD9File(object):
             self.loop       = sd9.read(1)
             self.fluff4     = sd9.read(1)
             self.index      = sd9.read(2)
-            self.audio      = sd9.read()
+            self.audio      = sd9.read(int.from_bytes(self.audioSize, byteorder='little'))
             sd9.close()
 
             if self.header != self.SD9_HEADER:
                 print("ERROR: SD9 file provided is invalid")
                 return False
-
-            if self.audioSize != len(self.audio).to_bytes(4, byteorder="little", signed=False):
-                print("WARNING: Original SD9 file audio size is incorrect")
             
             return True
 
