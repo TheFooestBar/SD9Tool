@@ -16,6 +16,7 @@ This script supports setting **section loops**, which tells the game once you re
 ## Features
 * Export audio from SD9 file
 * Import audio into SD9 file
+* Transfer audio and parameters from one SD9 file to another
 * Set audio volume
 * Set section loops
 
@@ -28,12 +29,14 @@ To get the help dialogue, run `python sd9tool.py --help`. See below for argument
 #### General Options
 * `--sd9 <FILE>` - SD9 file you wish to modify
 * `--clobber` - Overwrite file on save. For saving SD9 files, **not** providing this will save the data into "your_file.sd9_out" instead
+* `--outfile` - Specify output SD9 file
 
 #### SD9 Operations
 * `--print` - Output SD9 header information
-* `--modify` - Only modify SD9 header parameters (see below)
-* `--import <FILE>` - Replace audio file with the one provided. *Note: File provided must already be saved in Microsoft ADPCM format*
-* `--export <FILE>` - Export audio file in SD9
+* `--modify` - Only modify SD9 header parameters (see "SD9 Parameters" section)
+* `--import <WAV_FILE>` - Replace audio file with the one provided. *Note: File provided must already be saved in Microsoft ADPCM format*
+* `--export <WAV_FILE>` - Export audio file in SD9
+* `--transfer <SD9_FILE>` - Transfer audio data, volume and loop parameters from `SD9_FILE` into the loaded SD9 file
 
 #### SD9 Parameters
 If none of the options below are specified, whatever is in the file will be used.
@@ -51,6 +54,16 @@ python sd9tool.py --sd9 8thstyle.sd9 --import ddr4m.wav --volume 95 --loop true 
 Export audio from SD9 to a file:
 ```bash
 python sd9tool.py --sd9 8thstyle.sd9 --export 8thstyle.wav
+```
+
+Modify SD9 volume
+```bash
+python sd9tool.py --sd9 8thstyle.sd9 --modify --volume 97
+```
+
+Transfer SD9 data from `source.sd9` to `destination.sd9` and overwrite destination file:
+```bash
+python sd9tool.py --sd9 destination.sd9 --transfer source.sd9 --clobber
 ```
 
 # SSP2WAV
