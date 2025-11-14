@@ -129,7 +129,7 @@ class SD9File(object):
                 volume = 125 - volume
                 self.volume = volume.to_bytes(1, byteorder="little", signed=False)
         if loop:
-            self.loop = loop.to_bytes(1, byteorder='little', signed=False)
+            self.loop = loop.to_bytes(loop, byteorder='little', signed=False)
         if loopStart is not None:
             loopStart *= 4
             self.loopStart = loopStart.to_bytes(4, byteorder='little', signed=False)
@@ -229,7 +229,7 @@ def main(argv):
     )
     fileActionExclusive.add_argument(
         "-m", "--modify",
-        help='Only modify SD9 options',
+        help='Modify SD9 options',
         action='store_true',
         dest='sd9_modify'
     )
@@ -240,12 +240,12 @@ def main(argv):
     )
     fileActionExclusive.add_argument(
         '-i', '--import',
-        help='Audio file to import into SD9 file',
+        help='WAV file to import into SD9 file',
         dest='audio_import'
     )
     fileActionExclusive.add_argument(
         '-e', '--export',
-        help='Audio file to export from SD9 file',
+        help='WAV file to export from SD9 file',
         dest='audio_export'
     )
     
@@ -257,7 +257,8 @@ def main(argv):
     )
     trackOptions.add_argument(
         '-l', '--loop',
-        type=bool
+        type=int,
+        choices=range(0,2)
     )
     trackOptions.add_argument(
         '-ls', '--loop-start',
