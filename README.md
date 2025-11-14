@@ -9,9 +9,9 @@ Credit to **RHKirby** for posting an excellent breakdown of the SD9 header.
 # SD9Tool
 This script lets you extract audio from / import audio into SD9 files. 
 
-Audio tracks exported from this script will be in Microsoft ADPCM format. When importing audio, be sure your audio track is also in this format. If not, you can convert it with [ffmpeg](https://www.ffmpeg.org/download.html).
+This script also supports setting **section loops**, which tells the game once you reach a section in the track (loop end), go back to another section (loop start). This lets you set an intro to the loop that will only play once. These are measured in **audio samples**, so you will need to use a tool such as Audacity to find where these are.
 
-This script supports setting **section loops**, which tells the game once you reach a section in the track (loop end), go back to another section (loop start). This lets you set an intro to the loop that will only play once. These are measured in **audio samples**, so you will need to use a tool such as Audacity to find where these are.
+**NOTE:** When importing custom audio into an SD9 file, it must first be in **Microsoft ADPCM format**. Tools like [Audacity](https://www.audacityteam.org/) or [FFmpeg](https://www.ffmpeg.org/download.html) can be used to convert your audio to this format.
 
 ## Features
 * Export audio from SD9 file
@@ -40,15 +40,15 @@ To get the help dialogue, run `python sd9tool.py --help`. See below for argument
 
 #### SD9 Parameters
 If none of the options below are specified, whatever is in the file will be used.
-* `--loop <True|False>` - Enable portion of the track to loop
+* `--loop <0|1>` - Enable(1) / Disable(0) portion of the track to loop
 * `--loop-start` - Sample number indicating the start of the loop
 * `--loop-end` - Sample number indicating the end of the loop. *Note: this may be needed if your audio file is not looping smoothly*
 * `--volume` - Set the volume of the audio track, range is 0 - 125 (loudest)
 
 ## Usage Examples
-Import audio into SD9, set the volume to 95, and set the start and end sample:
+Import audio into SD9, set the volume to 95, enable looping section, and set the start and end sample for loop:
 ```bash
-python sd9tool.py --sd9 8thstyle.sd9 --import ddr4m.wav --volume 95 --loop true --loop-start 0 --loop-end 1016063
+python sd9tool.py --sd9 8thstyle.sd9 --import ddr4m.wav --volume 95 --loop 1 --loop-start 0 --loop-end 1016063
 ```
 
 Export audio from SD9 to a file:
